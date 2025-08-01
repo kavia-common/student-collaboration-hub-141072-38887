@@ -48,7 +48,32 @@ db.notifications.createIndex({ read: 1 });
 
 print("MongoDB schema and indexes initialized.");
 
-// OPTIONAL: Insert sample users/groups/assignments/messages for dev.
+// Insert default user "Jo" with bcrypt-hashed password "Jo01"
+//
+// Hash generated with Node.js: 
+// const bcrypt = require('bcrypt'); bcrypt.hashSync('Jo01', 10)
+// Example result: $2b$10$dkaDJDnChpgyEtxnnzt1IO6Atf3CgKWQb6NADi5pFOYKaajNAvYBO
+
+var bcryptHash = "$2b$10$dkaDJDnChpgyEtxnnzt1IO6Atf3CgKWQb6NADi5pFOYKaajNAvYBO"; // Jo01
+
+if (!db.users.findOne({ email: "jo@email.com" })) {
+  db.users.insertOne({
+    email: "jo@email.com",
+    displayName: "Jo",
+    passwordHash: bcryptHash,
+    role: "student",
+    profilePicUrl: null,
+    bio: "",
+    groups: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    notifications: []
+  });
+  print("Default user 'Jo' inserted (email: jo@email.com, password: Jo01)");
+} else {
+  print("Default user 'Jo' already exists.");
+}
+
 EOF
 
 echo "MongoDB schema initialization complete."
